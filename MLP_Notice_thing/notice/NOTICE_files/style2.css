@@ -1,0 +1,32 @@
+body{
+	background-color: #A40031;
+	background-image: url(blue.png);
+	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+	font-weight: 300;
+}
+#main{
+	margin-top: 5%;
+	margin-left: auto;
+	margin-right: auto;
+
+
+	padding: 20px 20px 30px;
+	width: 750px;
+	text-align: center;
+	background-color:#fff;
+	box-shadow: 0px 0px 45px #000;
+}
+#head{
+background-image: url(head2.png);
+	margin: auto;
+	width: 691px;
+	height: 224px;
+	margin-bottom: 25px;
+}
+#foot{
+	background-image: url(foot2.png);
+	margin: auto;
+	width: 752px;
+	height: 141px;
+	margin-top: 30px;
+}

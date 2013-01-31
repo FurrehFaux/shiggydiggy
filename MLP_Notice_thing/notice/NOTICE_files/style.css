@@ -1,0 +1,46 @@
+body{
+	background-color: #A40031;
+	background-image: url(textback.png);
+	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+	font-weight: 300;
+}
+#main{
+	margin-top: 5%;
+	margin-left: auto;
+	margin-right: auto;
+/*
+	To anyone reading this code,
+	
+	I am very familiar with the fact that you can
+	use "margin: 5% auto inherit;" to do the work
+	of 3 lines in but 1, but Firefox will explode
+	if you do. Don't judge me.
+	
+	All The Best,
+	The Architects
+	
+	P.S. Too much time was spent making sure each
+	of these lines were of the same length.
+	
+	
+*/
+	padding: 20px 20px 30px;
+	width: 750px;
+	text-align: center;
+	background-color:#fff;
+	box-shadow: 0px 0px 45px #000;
+}
+#head{
+background-image: url(head.png);
+	margin: auto;
+	width: 715px;
+	height: 210px;
+	margin-bottom: 25px;
+}
+#foot{
+	background-image: url(foot.png);
+	margin: auto;
+	width: 704px;
+	height: 105px;
+	margin-top: 25px;
+}

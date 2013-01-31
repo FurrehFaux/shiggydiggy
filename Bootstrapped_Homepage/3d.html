@@ -1,0 +1,260 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+    <style>
+        body {
+            margin: 0px;
+            padding: 0px;
+        }
+        
+        #myCanvas {
+            border: 1px solid #9C9898;
+        }
+    </style>
+    <script>
+        
+        
+        var canvas = null;
+        var c = null;
+        var canvasWidth = 576;
+        var canvasHeight = 400;
+        var t = 0;
+        
+        var myShape = null;
+        
+        function Shape(topPlane, centerPlane, bottomPlane){
+            this.topPlane = topPlane;
+            this.centerPlane = centerPlane;
+            this.bottomPlane = bottomPlane;
+            
+            this.rotate = function(newTheta){
+                topPlane.rotate(newTheta);
+                centerPlane.rotate(newTheta);
+                bottomPlane.rotate(newTheta);
+            }
+            
+            this.generatePlanes = function(){
+                topPlane.generate();
+                centerPlane.generate();
+                bottomPlane.generate();
+            }
+        }
+        
+            function Plane(centerX, centerY, planeLength, planeWidth, planeTilt, planeTheta){
+            this.centerX = centerX;
+            this.centerY = centerY;
+            this.planeLength = planeLength;
+            this.planeTheta = planeTheta;
+            
+            var lastPerspectiveX = null;
+            var lastPerspectiveX2 = null;
+            var planeNextCornerAngle = 2 * Math.asin(planeWidth / planeLength);
+            
+            this.rotate = function(newTheta){
+                planeTheta = newTheta - planeNextCornerAngle / 2;
+            }
+            
+            this.translate = function(newCenterX, newCenterY){
+                centerX = newCenterX;
+                centerY = newCenterY;
+            }
+            
+            this.generate = function(){
+                var ovalLength = planeLength;
+                var ovalWidth = ovalLength * planeTilt;
+                
+                var perspectiveX = (ovalLength / 2) * Math.cos(planeTheta);
+                var perspectiveY = (ovalWidth / 2) * Math.sin(planeTheta);
+                var perspectiveX2 = (ovalLength / 2) * Math.cos(planeTheta + planeNextCornerAngle);
+                var perspectiveY2 = (ovalWidth / 2) * Math.sin(planeTheta + planeNextCornerAngle);
+                
+                this.topLeftX = (perspectiveX * 1) + centerX;
+                this.topLeftY = (perspectiveY * -1) + centerY;
+                this.bottomRightX = (perspectiveX * -1) + centerX;
+                this.bottomRightY = (perspectiveY * 1) + centerY
+                this.topRightX = (perspectiveX2 * 1) + centerX;
+                this.topRightY = (perspectiveY2 * -1) + centerY;
+                this.bottomLeftX = (perspectiveX2 * -1) + centerX;
+                this.bottomLeftY = (perspectiveY2 * 1) + centerY;
+            }
+        }
+        
+        function clearCanvas(){
+            canvas.width = 1;
+            canvas.width = canvasWidth;
+        }
+        
+        function init(){
+            canvas = document.getElementById("myCanvas");
+            c = canvas.getContext("2d");
+            canvas.width = canvasWidth;
+            canvas.height = canvasHeight;
+            
+            var topPlane = new Plane(288, 150, 100, 70, 0.5, theta);
+            var centerPlane = new Plane(288, 200, 600, 70, 0.5, theta);
+            var bottomPlane = new Plane(288, 250, 100, 70, 0.5, theta);
+            
+            myShape = new Shape(topPlane, centerPlane, bottomPlane);
+            
+            //drawScreen();
+            
+            updateScreen();
+        }
+        
+        var theta = 0; // top left
+        function drawScreen(){
+        
+            var lineWidth = 2;
+            
+            myShape.rotate(theta);
+            //myPlane.translate(tankX, 100);
+            myShape.generatePlanes();
+            
+            // draw front bottom of tank
+            c.beginPath();
+            c.moveTo(myShape.centerPlane.topLeftX, myShape.centerPlane.topLeftY); // top left
+            c.lineTo(myShape.centerPlane.topRightX, myShape.centerPlane.topRightY); // top right
+            c.lineTo(myShape.bottomPlane.topRightX, myShape.bottomPlane.topRightY); // bottom right
+            c.lineTo(myShape.bottomPlane.topLeftX, myShape.bottomPlane.topLeftY); // bottom left
+            c.closePath();
+            
+            c.lineJoin = "round";
+            c.strokeStyle = "black";
+            c.lineWidth = lineWidth;
+            c.stroke();
+            c.fillStyle = "blue";
+            c.fill();
+            
+            // draw back bottom of tank
+            c.beginPath();
+            c.moveTo(myShape.centerPlane.bottomLeftX, myShape.centerPlane.bottomLeftY); // top left
+            c.lineTo(myShape.centerPlane.bottomRightX, myShape.centerPlane.bottomRightY); // top right
+            c.lineTo(myShape.bottomPlane.bottomRightX, myShape.bottomPlane.bottomRightY); // bottom right
+            c.lineTo(myShape.bottomPlane.bottomLeftX, myShape.bottomPlane.bottomLeftY); // bottom left
+            c.closePath();
+            
+            c.lineJoin = "round";
+            c.strokeStyle = "black";
+            c.lineWidth = lineWidth;
+            c.stroke();
+            c.fillStyle = "blue";
+            c.fill();
+            
+            // draw front top of tank
+            c.beginPath();
+            c.moveTo(myShape.topPlane.topLeftX, myShape.topPlane.topLeftY); // top left
+            c.lineTo(myShape.topPlane.topRightX, myShape.topPlane.topRightY); // top right
+            c.lineTo(myShape.centerPlane.topRightX, myShape.centerPlane.topRightY); // bottom right
+            c.lineTo(myShape.centerPlane.topLeftX, myShape.centerPlane.topLeftY); // bottom left
+            c.closePath();
+            
+            c.lineJoin = "round";
+            c.strokeStyle = "black";
+            c.lineWidth = lineWidth;
+            c.stroke();
+            c.fillStyle = "blue";
+            c.fill();
+            
+            // draw back top of tank
+            c.beginPath();
+            c.moveTo(myShape.topPlane.bottomLeftX, myShape.topPlane.bottomLeftY); // top left
+            c.lineTo(myShape.topPlane.bottomRightX, myShape.topPlane.bottomRightY); // top right
+            c.lineTo(myShape.centerPlane.bottomRightX, myShape.centerPlane.bottomRightY); // bottom right
+            c.lineTo(myShape.centerPlane.bottomLeftX, myShape.centerPlane.bottomLeftY); // bottom left
+            c.closePath();
+            
+            c.lineJoin = "round";
+            c.strokeStyle = "black";
+            c.lineWidth = lineWidth;
+            c.stroke();
+            c.fillStyle = "blue";
+            c.fill();
+            
+            // draw top of tank
+            c.beginPath();
+            c.moveTo(myShape.topPlane.topLeftX, myShape.topPlane.topLeftY); // top left
+            c.lineTo(myShape.topPlane.topRightX, myShape.topPlane.topRightY); // top right
+            c.lineTo(myShape.topPlane.bottomRightX, myShape.topPlane.bottomRightY); // bottom right
+            c.lineTo(myShape.topPlane.bottomLeftX, myShape.topPlane.bottomLeftY); // bottom left
+            c.closePath();
+            
+            c.strokeStyle = "black";
+            c.lineWidth = lineWidth;
+            c.stroke();
+            c.fillStyle = "blue";
+            c.fill();
+            
+            if (isRightSideOfShapeInFront(myShape)) {
+                // draw right of tank
+                c.beginPath();
+                c.moveTo(myShape.topPlane.topRightX, myShape.topPlane.topRightY); // front
+                c.lineTo(myShape.centerPlane.topRightX, myShape.centerPlane.topRightY); // front
+                c.lineTo(myShape.bottomPlane.topRightX, myShape.bottomPlane.topRightY); // front
+                c.lineTo(myShape.bottomPlane.bottomRightX, myShape.bottomPlane.bottomRightY); // back
+                c.lineTo(myShape.centerPlane.bottomRightX, myShape.centerPlane.bottomRightY); // back
+                c.lineTo(myShape.topPlane.bottomRightX, myShape.topPlane.bottomRightY); // back
+                c.closePath();
+                
+                c.strokeStyle = "black";
+                c.lineWidth = lineWidth;
+                c.stroke();
+                c.fillStyle = "blue";
+                c.fill();
+            }
+            else {
+                // draw left of tank
+                c.beginPath();
+                c.moveTo(myShape.topPlane.topLeftX, myShape.topPlane.topLeftY); // front
+                c.lineTo(myShape.centerPlane.topLeftX, myShape.centerPlane.topLeftY); // front
+                c.lineTo(myShape.bottomPlane.topLeftX, myShape.bottomPlane.topLeftY); // front
+                c.lineTo(myShape.bottomPlane.bottomLeftX, myShape.bottomPlane.bottomLeftY); // back
+                c.lineTo(myShape.centerPlane.bottomLeftX, myShape.centerPlane.bottomLeftY); // back
+                c.lineTo(myShape.topPlane.bottomLeftX, myShape.topPlane.bottomLeftY); // back
+                c.closePath();
+                
+                c.strokeStyle = "black";
+                c.lineWidth = lineWidth;
+                c.stroke();
+                c.fillStyle = "blue";
+                c.fill();
+            }
+            
+        }
+        
+        function isRightSideOfShapeInFront(tankObj){
+            if (tankObj.topPlane.topRightY > tankObj.topPlane.topLeftY) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        
+        function updateScreen(){
+            theta += .01; // radians
+            clearCanvas();
+            drawScreen();
+            setTimeout("updateScreen()", 10);
+        }
+        
+        function handleMouseDown(e){
+            var mouseX = e.clientX;
+            var mouseY = e.clientY;
+        }
+        
+        function handleMouseMove(e){
+            var mouseX = e.clientX;
+            var mouseY = e.clientY;
+        }
+        
+        function handleMouseUp(e){
+        
+        }
+        
+    </script>
+    <body onload="init()" onmousedown="return false;">
+        <canvas id="myCanvas">
+        </canvas>
+    </body>
+</html>
+
